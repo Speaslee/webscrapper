@@ -14,19 +14,13 @@ class Page < ActiveRecord::Base
     if new_url
       page = agent.get(new_url)
     else
-    page = agent.get("http://wikipedia.org/wiki/Main_Page")
-    link = page.link_with(text: 'Random article')
-    page = link.click
-    @list_o_links = (page.search("p").search("a")).to_a
-    #
-    # body_text= page.search("body p")
-    # results = []
-    # paragraphs = body_text.each do |para|
-    #  something = para.search "p"
-    #   results.push(something)
-    #   end
-  end
-  binding.pry
+      page = agent.get("http://wikipedia.org/wiki/Main_Page")
+      link = page.link_with(text: 'Random article')
+      page = link.click
+      @list_o_links = (page.search("p").search("a")).to_a
+
+    end
+
     i = self.new(
     name: page.title,
     prelude: page.search("p").first,
@@ -36,7 +30,6 @@ class Page < ActiveRecord::Base
 
   end
 
-
   def follow_link nums
     list_o_url= @list_o_links.map {|l| "http://www.wikipedia.org"+l.attributes["href"].value}
     list_o_url.sample(nums).each do |u|
@@ -44,6 +37,6 @@ class Page < ActiveRecord::Base
     end
   end
 
-
+  
 
 end
