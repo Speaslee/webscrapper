@@ -2,5 +2,7 @@ require "pry"
 require "./db/setup"
 require "./lib/all"
 
-page = Page.save_random
- page.follow_link(6)
+
+d = Page.save_random 
+
+d.follow_link 6

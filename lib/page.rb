@@ -5,15 +5,16 @@ class Page < ActiveRecord::Base
   validates_uniqueness_of :url
   has_many :links
   attr_reader :list_o_links
-  def self.save_random url = nil
+
+
+  def self.save_random new_url = nil
     #search for random page
 
     agent = Mechanize.new
-    if url
-      page = agent.get(url)
+    if new_url
+      page = agent.get(new_url)
     else
-      page = agent.get("http://wikipedia.org/wiki/Main_Page")
-    end
+    page = agent.get("http://wikipedia.org/wiki/Main_Page")
     link = page.link_with(text: 'Random article')
     page = link.click
     @list_o_links = (page.search("p").search("a")).to_a
@@ -24,7 +25,8 @@ class Page < ActiveRecord::Base
     #  something = para.search "p"
     #   results.push(something)
     #   end
-
+  end
+  binding.pry
     i = self.new(
     name: page.title,
     prelude: page.search("p").first,
@@ -34,18 +36,13 @@ class Page < ActiveRecord::Base
 
   end
 
+
   def follow_link nums
-
-    list_o_url= @list_o_links.map {|l| "http://www.wikipedia.org"+l.atributes["href"].value}
-
-
+    list_o_url= @list_o_links.map {|l| "http://www.wikipedia.org"+l.attributes["href"].value}
     list_o_url.sample(nums).each do |u|
       save_page url
-      binding.pry
     end
-
   end
-
 
 
 
